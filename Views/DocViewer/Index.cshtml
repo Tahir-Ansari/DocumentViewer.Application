@@ -1,0 +1,51 @@
+﻿@{
+}
+
+
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script>
+    function ViewDocument(file) {
+        $("#loader").fadeIn();
+        var data = { FileName: file };
+        $.ajax({
+            type: "POST",
+            url: '/DocViewer/OnPost',
+            data: data,
+            dataType: "text"
+        }).done(function (data) {
+            var folderName = file.replace(".", "_");
+            $("#content").empty();
+            for (var i = 1; i <= data; i++) {
+                $("#content").append("<img class='img-fluid' src='Content/" + folderName + "/page-" + i + ".png'/>");
+
+            }
+            $("#loader").fadeOut();
+        })
+    }
+</script>
+<script type="text/javascript">
+    $(window).load(function () {
+        $("#loader").fadeOut(1000);
+    });
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidenav bg-light p-3">
+                <div id="loader"></div>
+                <h2 class="ps-3">Files</h2>
+                @if (ViewBag.lstFiles != null)
+                {
+                    @foreach (string file in ViewBag.lstFiles)
+                    {
+                        <a href="#" onclick="ViewDocument('@file')" class="d-block">@file</a>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h2>Preview</h2>
+            <div id="content" class="border p-3"></div>
+        </div>
+    </div>
+</div>
